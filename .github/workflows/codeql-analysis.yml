@@ -1,0 +1,46 @@
+# vim: expandtab tabstop=2 shiftwidth=2
+name: CI
+
+on:
+  push:
+    branches: master
+  pull_request:
+    branches: master
+  release:
+    types:
+      - created
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Analyze
+    strategy:
+      fail-fast: false
+      matrix:
+        language:
+          - 'java'
+        ghidra-version:
+          - '10.0'
+          - '10.0.0-beta'
+          - '9.2.4'
+          - '9.2.2'
+          - '9.2.1'
+          - '9.2'
+          # Ghidra versions prior to 9.2 lack the Gson JSON library, and are not supported.
+    runs-on: ubuntu-latest
+    container: registry.gitlab.com/torgo/ghidra-container/ghidra-plugin-builder:${{ matrix.ghidra-version }}
+    steps:
+      - name: "Clone FindCrypt"
+        uses: actions/checkout@v2
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+      - name: Compile FindCrypt - ${{ matrix.ghidra-version }}
+        run: |
+          cd FindCrypt
+          gradle
+          ls -lah dist/
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+  

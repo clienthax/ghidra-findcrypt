@@ -17,8 +17,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language:
-          - 'java'
         ghidra-version:
           - '10.0'
           - '10.0.0-beta'
@@ -35,7 +33,7 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
         with:
-          languages: ${{ matrix.language }}
+          languages: java
       - name: Compile FindCrypt - ${{ matrix.ghidra-version }}
         run: |
           cd FindCrypt

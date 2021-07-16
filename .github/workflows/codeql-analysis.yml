@@ -30,6 +30,10 @@ jobs:
     steps:
       - name: "Clone FindCrypt"
         uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt' # See 'Supported distributions' for available options
+          java-version: '11'
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
       - name: Compile FindCrypt - ${{ matrix.ghidra-version }}
